@@ -1,9 +1,5 @@
-const downloadFile = require('../dist/index.js');
+const downloadFile = require('../lib/index.js');
 
-beforeAll(()=>{
-
-  // document.body.innerHTML = `<button>下载</button>`;
-})
 
 describe('Test missing fileUrl and fileName parameter exception', () => {
   it('Test missing fileUrl parameter exception', () => {
