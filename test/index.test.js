@@ -1,5 +1,5 @@
+const sinon = require('sinon');
 const downloadFile = require('../lib/index.js');
-
 
 describe('Test missing fileUrl and fileName parameter exception', () => {
   it('Test missing fileUrl parameter exception', () => {
@@ -15,25 +15,55 @@ describe('Test missing fileUrl and fileName parameter exception', () => {
 });
 
 describe('Test download', () => {
-  it('Test download success', done => {
-    // console.log(document.body.innerHTML);
-    const fn = jest.fn();
-    downloadFile(
-      'http://img.souche.com/files/default/21460c50f16c4d8f0d4bf91873b99d84111.jpg',
-      'test.png',
-      {
-        success(ev) {
-          
-          
-        },
-        complete(ev) {
-          
-          expect(fn).not.toBeCalled();
-          done();
-         
-          // console.log("complete");
-        }
-      },
-    );
+  let xhr;
+  let requests = [];
+  const oldHandle = window.URL.createObjectURL;
+  beforeEach(() => {
+    xhr = sinon.useFakeXMLHttpRequest();
+    xhr.onCreate = function(req) {
+      requests.push(req);
+    };
+    global.URL.createObjectURL = jest.fn();
   });
+  afterEach(() => {
+    xhr.restore();
+    requests.length = 0;
+    global.URL.createObjectURL = oldHandle;
+  });
+
+  it('Test download success', done => {
+    const fn = jest.fn();
+    downloadFile('./assets/fixture.pdf', 'test.pdf', {
+      success(ev) {
+        fn();
+        expect(fn).toHaveBeenCalledTimes(2);
+        done();
+      },
+      failed(ev) {},
+      complete(ev) {
+        fn();
+        expect(fn).toHaveBeenCalledTimes(1);
+      },
+    });
+    requests[0].respond(200);
+  });
+
+  it('Test download failed', done => {
+    const fn = jest.fn();
+    downloadFile('./assets/fixture.pdf', 'test.pdf', {
+      success(ev) {},
+      failed(ev) {
+        fn();
+        expect(fn).toHaveBeenCalledTimes(2);
+        done();
+      },
+      complete(ev) {
+        fn();
+        expect(fn).toHaveBeenCalledTimes(1);
+      },
+    });
+    requests[0].respond(404);
+  });
+
+ 
 });

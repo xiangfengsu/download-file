@@ -51,7 +51,10 @@ Type: `Object`
 
 Type: `function`
 
-文件下载的进度回调函数，参数是 ProgressEvent 类型，可以获取文件的总大小，和当前已下载的大小 
+文件下载的进度回调函数，参数是 ProgressEvent 类型，可以获取文件的总大小，和当前已下载的大小  
+
+`注意 使用该方法需服务端设置响应头，文件的大小 Content-Length 属性, eg: ctx.set('Content-Length', file.size)`
+
 
 ##### success
 
