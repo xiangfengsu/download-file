@@ -59,6 +59,7 @@ export default (
         }
       } catch (error) {
         console.log(error);
+        opts.failed(ev);
         throw new Error(error);
       }
     };
