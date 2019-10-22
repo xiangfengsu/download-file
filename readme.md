@@ -23,13 +23,13 @@ downloadFile('http://domain.asset.test.png','test.png',{
     complete(e){
         console.log(e)
     }
-})
+},{token:'123'})
 
 ```
 
 ## API
 
-### downloadFile(fileUrl,fileName,[options])
+### downloadFile(fileUrl,fileName,[options],headers)
 
 #### fileUrl 
 
@@ -73,4 +73,11 @@ Type: `function`
 Type: `function`
 
 文件下载无论成功还是失败回调函数，参数是 ProgressEvent 类型
+
+#### headers 
+
+Type: `object`
+
+http headers to post, available in modern browsers
+
 
