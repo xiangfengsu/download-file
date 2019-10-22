@@ -1,6 +1,10 @@
 const sinon = require('sinon');
 const downloadFile = require('../lib/index.js');
 
+const headers = {
+  'token':'123'
+}
+
 describe('Test missing fileUrl and fileName parameter exception', () => {
   it('Test missing fileUrl parameter exception', () => {
     expect(() => {
@@ -63,6 +67,22 @@ describe('Test download', () => {
       },
     });
     requests[0].respond(404);
+  });
+
+  it('get headers', () => {
+    downloadFile('./assets/fixture.pdf', 'test.pdf', {
+      success(ev) {
+      },
+      failed(ev) {},
+      complete(ev) {
+      },
+    },headers);
+
+    expect(requests[0].requestHeaders).toEqual({
+      "Content-Type": "text/plain;charset=utf-8",
+      'X-Requested-With': 'XMLHttpRequest',
+      token: '123',
+    });
   });
 
  

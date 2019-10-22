@@ -1,7 +1,8 @@
 var downloadFiles = (function () {
   'use strict';
 
-  var index = (function (fileUrl, fileName, opts) {
+  var index = (function (fileUrl, fileName, opts, headers) {
+      if (headers === void 0) { headers = {}; }
       if (!fileUrl) {
           throw new Error('fileUrl is required');
       }
@@ -95,6 +96,16 @@ var downloadFiles = (function () {
           var xhr = new XMLHttpRequest();
           addListeners(xhr);
           xhr.open('GET', url);
+          // when set headers['X-Requested-With'] = null , can close default XHR header
+          // see https://github.com/react-component/upload/issues/33
+          if (headers['X-Requested-With'] !== null) {
+              xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+          }
+          for (var h in headers) {
+              if (headers.hasOwnProperty(h) && headers[h] !== null) {
+                  xhr.setRequestHeader(h, headers[h]);
+              }
+          }
           xhr.responseType = 'blob';
           xhr.send();
       }
